@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup Page</title>
+</head>
+<body>
+    <h2>Signup Page</h2>
+    <form id="signup-form" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <button type="submit">Signup</button>
+    </form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        $('#signup-form').on('submit', function(event) {
+            event.preventDefault();
+            var name = $('#name').val();
+            var email = $('#email').val();
+
+            $.post('/signup', { name: name, email: email }, function(response) {
+                alert(response.message);
+            });
+        });
+
+        socket.on('signup_approved', function(data) {
+            console.log('Signup approved for:', data.email);
+            window.location.href = '/customer';
+        });
+
+        socket.on('signup_rejected', function(data) {
+            console.log('Signup rejected for:', data.email);
+            alert('Your signup request was rejected.');
+            // Optionally handle rejection logic here
+        });
+    </script>
+</body>
+</html>

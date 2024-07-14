@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-eVEWOO7FZYd4zFo6fkozfgvhmX7IfAEMWft82WsECxiB0Fe3d20szueUYaBhpgXz9td9o0+RV3svN3nqFv5mZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-eVEWOO7FZYd4zFo6fkozfgvhmX7IfAEMWft82WsECxiB0Fe3d20szueUYaBhpgXz9td9o0+RV3svN3nqFv5mZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+
+        .container{
+
+        }
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .card-body {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .post {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centering items */
+        }
+        .profile-picture {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .user-name {
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+        .post-time {
+            color: #666;
+            margin-bottom: 0;
+        }
+        .post-content {
+            margin-bottom: 15px;
+            text-align: center; /* Centering content */
+        }
+        .comment {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f7f7f7;
+            position: relative;
+        }
+        .comment-form textarea {
+            resize: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .file-upload {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover {
+            background-color: #eaeaea;
+        }
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .product-card img {
+            width: 400px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .product-info {
+            margin-bottom: 20px;
+        }
+        .product-info h2 {
+            margin-bottom: 10px;
+        }
+        .product-info p {
+            margin-bottom: 20px;
+        }
+        .product-info button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .product-info button:hover {
+            background-color: #0056b3;
+        }
+        .reviews {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .star {
+            color: #f1c40f; /* Yellow color */
+        }
+        .star-rating {
+            display: inline-block;
+            unicode-bidi: bidi-override;
+            color: #f7b731;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .star-rating span {
+            padding: 0 1px;
+        }
+        .star-rating::before {
+            content: '★★★★★';
+            letter-spacing: 1px;
+        }
+        .star-rating::before {
+            content: '★★★★★';
+            letter-spacing: 1px;
+            position: absolute;
+            top: 0;
+            opacity: 0;
+        }
+        .star-rating span::before {
+            content: '★';
+            position: absolute;
+            opacity: 1;
+        }
+        .delete-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        #sentimentResults{
+            display:flex;
+            justify-content:space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <!-- File Upload Section -->
+                <div class="file-upload mb-4">
+                    <label for="csv" class="mb-0">Upload CSV File</label>
+                    <input type="file" id="csv" name="csv" style="display: none;">
+                    <p class="mt-2"><i class="fas fa-cloud-upload-alt"></i> Drag & Drop files here</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Reviews Analysis
+                    </div>
+                    <div class="card-body">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="product-card">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYJqRZF3Zddv9LnnMnhjlbYt2G6B6jKcT33Q&s" alt="Custom iPhone 16">
+                                    <div class="product-info">
+                                        <h2>Iphone 16</h2>
+                                        <p>We expect the iPhone 16, iPhone 16 Plus, iPhone 16 Pro and iPhone 16 Pro Max to be among the best phones of 2024, and while we're still a few months away from the official launch of Apple's next handsets, that hasn't stopped the iPhone 16 rumors from arriving in earnest..</p>
+                                        <h2>Price: $120</h2>
+                                        <button>Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Form for Comment Analysis -->
+                        <form id="commentForm" class="comment-form" style="text-align:center;">
+                            <div class="form-group">
+                                <label for="comment">Enter Your Reviews:</label>
+                                <textarea class="form-control" id="comment" rows="3" name="comment"></textarea>
+                            </div>
+                            <div class="star-icons">
+                                <span class="star">&#9733;</span> <!-- Full star -->
+                                <span class="star">&#9733;</span> <!-- Full star -->
+                                <span class="star">&#9733;</span> <!-- Full star -->
+                                <span class="star">&#9733;</span> <!-- Empty star -->
+                                <span class="star">&#9733;</span> <!-- Empty star -->
+                            </div>
+                            <button type="submit" class="btn btn-primary">Review!</button>
+                        </form>
+                     
+                        <div id="result" class="card mt-3">
+                        
+                            <div class="card-header" style="text-align:center;">
+                                <h3>Reviews Analysis Results</h3>
+                                <div id="sentimentResults">
+                                    <!-- Display counters for positive and negative reviews -->
+                                    <div id="positiveCounter"><strong>Positive Reviews:</strong> <span id="positiveCount">0</span></div>
+                                    <div id="negativeCounter"><strong>Negative Reviews:</strong> <span id="negativeCount">0</span></div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Results for comment analysis will be displayed here -->
+                                <div id="commentContainer" class="comment-container"></div>
+                                <div id="sentimentResult">
+                                    <!-- Star icons for reviews -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Handle form submission for comment analysis
+            var positiveCount = 0;
+            var negativeCount = 0;
+            $("#commentForm").submit(function(event) {
+                event.preventDefault();
+                var formData = new FormData(this);
+                var comment = $("#comment").val();
+                displayComment(comment);
+                // You can access the CSV file using formData.get('csv')
+                // Process the CSV data if necessary
+                $.ajax({
+                    type: "POST",
+                    url: "/test-comments",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        displayResult(response);
+                        // Clear the comment input field for new input
+                        $("#comment").val('');
+                        // Clear the CSV file input field
+                        $("#csv").val('');
+                    }
+                });
+            });
+        
+            // Function to display entered comment
+            function displayComment(comment) {
+                var commentContainer = $("#commentContainer");
+                var commentHtml = `
+                    <div class='comment'>
+                        <span class='delete-icon'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+</svg></span>
+                        ${comment}
+                    </div>`;
+                commentContainer.prepend(commentHtml);
+            }
+
+            // Function to handle delete icon click
+          // Function to handle delete icon click
+$(document).on('click', '.delete-icon', function() {
+    var sentiment = $(this).parent('.comment').hasClass('bg-success') ? 'Positive' : 'Negative';
+    if (sentiment === "Positive") {
+        positiveCount--;
+        $("#positiveCount").text(positiveCount);
+    } else {
+        negativeCount--;
+        $("#negativeCount").text(negativeCount);
+    }
+    $(this).parent('.comment').remove();
+});
+
+        
+            // Function to display results
+          // Function to display results
+function displayResult(data) {
+    // Display the sentiment result
+    var sentimentResult = $("#sentimentResult");
+    sentimentResult.empty();
+    var sentimentHtml = "<div><strong>Sentiment:</strong> " + data.sentiment + "</div>";
+    sentimentResult.append(sentimentHtml);
+    // Update background color of comments based on sentiment
+    var commentClass = data.sentiment === "Positive" ? "bg-success" : "bg-danger";
+    $("#commentContainer .comment:first-child").addClass(commentClass);
+
+    // Update counters
+    if (data.sentiment === "Positive") {
+        positiveCount++;
+        $("#positiveCount").text(positiveCount);
+    } else {
+        negativeCount++;
+        $("#negativeCount").text(negativeCount);
+    }
+}
+        });
+    </script>
+</body>
+</html>

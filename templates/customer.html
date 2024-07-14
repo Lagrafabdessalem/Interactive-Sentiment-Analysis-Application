@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-eVEWOO7FZYd4zFo6fkozfgvhmX7IfAEMWft82WsECxiB0Fe3d20szueUYaBhpgXz9td9o0+RV3svN3nqFv5mZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 30%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 100px;
+            margin:auto;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid #3b5998;
+        }
+
+        .messages-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f0f2f5;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            width: fit-content;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            background-color: #007bff;
+            color: #fff;
+            align-self: flex-end;
+            font-size: 14px;
+        }
+
+        .message.received {
+            background-color: #f6f6f6;
+        }
+
+        .message-meta {
+            margin-top: 5px;
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .input-container {
+            display: flex;
+            background-color: #f0f2f5;
+            border-top: 2px solid #3b5998;
+            padding: 10px;
+        }
+
+        #message {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        #sendButton {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+
+        .container2 {
+            margin-top: 50px;
+            text-align: center;
+            width: 40%;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 60%;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .video-container {
+            display: flex;
+            flex-direction:column;
+            justify-content: center;
+            width: 100%;
+            height: 80vh;
+            width:30%;
+            margin:auto;
+        }
+
+
+        .video-container button{
+            align-items:center;
+            text-align:cente;
+        }
+
+        .video {
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .video img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .video h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .video a {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .video a:hover {
+            background-color: #0056b3;
+        }
+
+        #relatedVideos {
+            height:80vh;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            margin:auto;
+            flex-direction:column;
+
+        }
+        .video-item {
+            max-width: 300px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            flex-direction:column;
+
+        }
+        .video-thumbnail {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .video-title {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .video-description {
+            font-size: 14px;
+            color: #666;
+        }
+        .watch-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+      
+    </style>
+</head>
+<body>
+ 
+    <div class="chat-container">
+        <div class="chat-header">Customer Chat</div>
+        <div class="messages-container" id="messages"></div>
+        <div class="input-container">
+            <input id="message" autocomplete="off" placeholder="Type your message..." />
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+
+<div class="related">
+    <button id="showHideRelatedVideosButton" style="display: none;">Show/Hide Related Videos</button>
+    <div id="relatedVideos">
+        <!-- Related videos will be displayed here -->
+    </div>
+</div>
+
+
+    <input type="hidden" id="videoUrl" value="">
+    <button id="exportBtn" style="display: none;">Download CSV</button>
+    <button id="viewButton" style="display: none;">View CSV</button>
+
+    <div class="container2">
+        <h1>YouTube Video Search</h1>
+        <input type="text" id="keyword" placeholder="Enter keyword">
+        <button onclick="searchVideos()">Search</button>
+        <div class="video-container" id="results"></div>
+        
+    </div>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+        var socket = io();
+
+        socket.on('connect', function() {
+            socket.emit('join_room', { username: 'customer', room: 'customer_room' });
+        });
+        socket.on('show_related_videos_button', function() {
+            document.getElementById('showHideRelatedVideosButton').style.display = 'block';
+        });
+        // Button to show/hide related videos
+        document.getElementById('showHideRelatedVideosButton').addEventListener('click', function() {
+            var relatedVideosDiv = document.getElementById('relatedVideos');
+            if (relatedVideosDiv.style.display === 'none') {
+                relatedVideosDiv.style.display = 'flex';
+                socket.emit('request_related_videos');
+            } else {
+                relatedVideosDiv.style.display = 'none';
+            }
+        });
+
+        // Socket event to receive and display related videos
+        socket.on('related_videos', function(data) {
+            displayRelatedVideos(data.videos);
+        });
+
+        // Function to display related videos
+        function displayRelatedVideos(videos) {
+            const container = document.getElementById('relatedVideos');
+            container.innerHTML = ''; // Clear existing content
+
+            videos.forEach(video => {
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
+
+                const thumbnail = document.createElement('img');
+                thumbnail.classList.add('video-thumbnail');
+                thumbnail.src = video.thumbnail;
+                videoItem.appendChild(thumbnail);
+
+                const title = document.createElement('h4');
+                title.classList.add('video-title');
+                title.textContent = video.title;
+                videoItem.appendChild(title);
+
+                const description = document.createElement('p');
+                description.classList.add('video-description');
+                description.textContent = video.description;
+                videoItem.appendChild(description);
+
+                const link = document.createElement('a');
+                link.classList.add('watch-link');
+                link.href = 'https://www.youtube.com/watch?v=' + video.videoId; // Construct the YouTube video URL
+                link.textContent = 'Watch';
+                videoItem.appendChild(link);
+
+                container.appendChild(videoItem);
+            });
+        }
+   
+
+  
+        socket.on('show_export_button', function(data) {
+            document.getElementById('videoUrl').value = data.videoUrl;
+            document.getElementById('exportBtn').style.display = 'block';
+
+            document.getElementById('viewButton').style.display = 'block';
+            document.getElementById('viewButton').onclick = function() {
+                // Fetch the CSV content via Fetch API
+                fetch(`/export?videoUrl=${data.videoUrl}`)
+                    .then(response => response.text())
+                    .then(csvData => {
+                        // Parse CSV data using PapaParse
+                        var parsedData = Papa.parse(csvData, { header: true });
+                        
+                        // Create a table element
+                        var table = '<table>';
+                        
+                        // Add header row
+                        table += '<thead><tr>';
+                        for (var key in parsedData.data[0]) {
+                            table += '<th>' + key + '</th>';
+                        }
+                        table += '</tr></thead>';
+            
+                        // Add data rows
+                        table += '<tbody>';
+                        parsedData.data.forEach(row => {
+                            table += '<tr>';
+                            for (var key in row) {
+                                table += '<td>' + row[key] + '</td>';
+                            }
+                            table += '</tr>';
+                        });
+                        table += '</tbody></table>';
+            
+                        // Open a new tab with the table
+                        var newWindow = window.open();
+                        newWindow.document.write(table);
+                    })
+                    .catch(error => console.error('Error fetching CSV data:', error));
+            };
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            var videoUrl = document.getElementById('videoUrl').value;
+            window.location.href = `/export?videoUrl=${videoUrl}`;
+        });
+        
+       
+          
+        socket.on('receive_message', function(data) {
+            var messages = document.getElementById('messages');
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (data.username === 'customer') {
+                messageElement.classList.add('sent');
+            } else {
+                messageElement.classList.add('received');
+            }
+            var messageContent = document.createElement('div');
+            messageContent.textContent = data.message;
+            messageElement.appendChild(messageContent);
+            var messageMeta = document.createElement('div');
+            messageMeta.classList.add('message-meta');
+            messageMeta.textContent = data.username === 'customer' ? 'You' : data.username;
+            messageElement.appendChild(messageMeta);
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            if (message.trim() !== '') {
+                socket.emit('send_message', { username: 'customer', message: message });
+                document.getElementById('message').value = '';
+            }
+        }
+
+       
+        function searchVideos() {
+            var keyword = document.getElementById('keyword').value.trim();
+            if (keyword === '') {
+                alert('Please enter a keyword');
+                return;
+            }
+
+            // Your YouTube Data API key
+            var apiKey = 'AIzaSyC_Jt1nGnqKHJiV6U__3wm1FicH_EG6oGI';
+
+            var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${keyword}&key=${apiKey}&maxResults=10`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data.items);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function displayResults(videos) {
+            var resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            videos.forEach(video => {
+                var videoId = video.id.videoId;
+                var title = video.snippet.title;
+                var thumbnail = video.snippet.thumbnails.default.url;
+
+                var videoElement = document.createElement('div');
+                videoElement.classList.add('video');
+
+                var thumbnailElement = document.createElement('img');
+                thumbnailElement.src = thumbnail;
+
+                var titleElement = document.createElement('h3');
+                titleElement.textContent = title;
+
+                var linkElement = document.createElement('a');
+                linkElement.href = `https://www.youtube.com/watch?v=${videoId}`;
+                linkElement.target = '_blank';
+                linkElement.textContent = 'Watch Video';
+
+                videoElement.appendChild(thumbnailElement);
+                videoElement.appendChild(titleElement);
+                videoElement.appendChild(linkElement);
+
+                resultsContainer.appendChild(videoElement);
+            });
+        }
+        // Add event listeners for "Enter" key press
+document.getElementById("message").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage();
+    }
+});
+
+document.getElementById("keyword").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        searchVideos();
+    }
+});
+        // Handle CSV data received from the server
+        socket.on('csv_data_received', function(data) {
+            var messages = document.getElementById('messages');
+            var csvData = data.csv_data.split('\n'); // Split CSV data by newline to get individual rows
+            csvData.forEach(function(row) {
+                var messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'received');
+                messageElement.textContent = row;
+                messages.appendChild(messageElement);
+            });
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+     
+    </script>
+</body>
+</html>
+
+    </script>
+</body>
+</html>
